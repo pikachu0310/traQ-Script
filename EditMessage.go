@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+
 	"traQ-Script/api"
 
 	"github.com/joho/godotenv"
@@ -20,11 +21,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	if api.CookieCache == "" {
+		panic("CookieCache is empty")
+	}
 
 	body, err := api.GetMessages()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(*body)
-	//fmt.Printf("%#v", body)
+	// fmt.Printf("%#v", body)
 }
