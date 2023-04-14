@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -27,20 +26,18 @@ func main() {
 	}
 
 	now := time.Now()
-	fiveMinutesAgo := now.Add(time.Duration(-5) * time.Minute)
-	fmt.Println(fiveMinutesAgo.UTC().Format("2006-01-02T15:04:05Z"))
-
-	requestData := map[string]string{"from": "a4f4ca7e-054e-4d8b-842e-8b777c353a5d", "after": fiveMinutesAgo.UTC().Format("2006-01-02T15:04:05Z")}
+	fiveMinutesAgo := now.Add(time.Duration(-30) * time.Minute)
+	requestData := map[string]string{"from": "f60166fb-c153-409a-811d-272426eda32b", "in": "5202813c-0063-46e0-9afa-401dc1bbb250", "after": fiveMinutesAgo.UTC().Format("2006-01-02T15:04:05Z")}
 
 	messages, err := api.GetMessages(requestData)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(*messages)
 
-	for i, message := range messages.Hits {
-		api.EditMessages(message.Id, fmt.Sprintf("%s (Auto Edited %d)", message.Content, i))
+	for {
+		for _, message := range messages.Hits {
+			api.PostStamp(message.Id, "4a7315c0-c8d8-4a65-b6f4-5866a29bd113")
+		}
+		time.Sleep(time.Second * 1)
 	}
-
-	// fmt.Printf("%#v", body)
 }

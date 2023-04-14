@@ -6,7 +6,7 @@ import (
 )
 
 const getMessagesURL = BaseURL + "/messages"
-const editMessageURL = BaseURL + "/messages/"
+const MessagesURL = BaseURL + "/messages/"
 
 type GetMessagesResponse struct {
 	TotalHits int `json:"totalHits"`
@@ -43,10 +43,21 @@ func GetMessages(requestData map[string]string) (*GetMessagesResponse, error) {
 func EditMessages(messageID string, content string) (*GetMessagesResponse, error) {
 	requestData := map[string]string{"content": content}
 	var getMeResponse *GetMessagesResponse
-	err := RequestAndGetResponse("PUT", editMessageURL+messageID, requestData, &getMeResponse)
+	err := RequestAndGetResponse("PUT", MessagesURL+messageID, requestData, &getMeResponse)
 	if err != nil {
 		fmt.Println(err)
 		return &GetMessagesResponse{}, err
 	}
 	return getMeResponse, nil
+}
+
+func PostStamp(messageID string, stampID string) error {
+	requestData := map[string]string{}
+	var getMeResponse *GetMessagesResponse
+	err := RequestAndGetResponse("POST", MessagesURL+messageID+"/stamps/"+stampID, requestData, &getMeResponse)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
 }
