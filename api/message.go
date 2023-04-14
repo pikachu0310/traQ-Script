@@ -6,6 +6,7 @@ import (
 )
 
 const getMessagesURL = BaseURL + "/messages"
+const editMessageURL = BaseURL + "/messages/"
 
 type GetMessagesResponse struct {
 	TotalHits int `json:"totalHits"`
@@ -28,10 +29,21 @@ type GetMessagesResponse struct {
 	} `json:"hits"`
 }
 
-func GetMessages() (*GetMessagesResponse, error) {
-	requestData := map[string]string{"word": "pikachu"}
+func GetMessages(requestData map[string]string) (*GetMessagesResponse, error) {
+	// requestData := map[string]string{"from": "a4f4ca7e-054e-4d8b-842e-8b777c353a5d"}
 	var getMeResponse *GetMessagesResponse
 	err := RequestAndGetResponse("GET", getMessagesURL, requestData, &getMeResponse)
+	if err != nil {
+		fmt.Println(err)
+		return &GetMessagesResponse{}, err
+	}
+	return getMeResponse, nil
+}
+
+func EditMessages(messageID string, content string) (*GetMessagesResponse, error) {
+	requestData := map[string]string{"content": content}
+	var getMeResponse *GetMessagesResponse
+	err := RequestAndGetResponse("PUT", editMessageURL+messageID, requestData, &getMeResponse)
 	if err != nil {
 		fmt.Println(err)
 		return &GetMessagesResponse{}, err

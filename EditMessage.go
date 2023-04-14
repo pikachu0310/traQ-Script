@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"traQ-Script/api"
 
@@ -25,10 +26,21 @@ func main() {
 		panic("CookieCache is empty")
 	}
 
-	body, err := api.GetMessages()
+	now := time.Now()
+	fiveMinutesAgo := now.Add(time.Duration(-5) * time.Minute)
+	fmt.Println(fiveMinutesAgo.UTC().Format("2006-01-02T15:04:05Z"))
+
+	requestData := map[string]string{"from": "a4f4ca7e-054e-4d8b-842e-8b777c353a5d", "after": fiveMinutesAgo.UTC().Format("2006-01-02T15:04:05Z")}
+
+	messages, err := api.GetMessages(requestData)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(*body)
+	fmt.Println(*messages)
+
+	for i, message := range messages.Hits {
+		api.EditMessages(message.Id, fmt.Sprintf("%s (Auto Edited %d)", message.Content, i))
+	}
+
 	// fmt.Printf("%#v", body)
 }
