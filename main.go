@@ -27,7 +27,7 @@ func main() {
 
 	now := time.Now()
 	fiveMinutesAgo := now.Add(time.Duration(-30) * time.Minute)
-	requestData := map[string]string{"from": "f60166fb-c153-409a-811d-272426eda32b", "in": "5202813c-0063-46e0-9afa-401dc1bbb250", "after": fiveMinutesAgo.UTC().Format("2006-01-02T15:04:05Z")}
+	requestData := map[string]any{"from": "f60166fb-c153-409a-811d-272426eda32b", "in": "5202813c-0063-46e0-9afa-401dc1bbb250", "after": fiveMinutesAgo.UTC().Format("2006-01-02T15:04:05Z")}
 
 	messages, err := api.GetMessages(requestData)
 	if err != nil {

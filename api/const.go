@@ -12,7 +12,7 @@ const BaseURL = "https://q.trap.jp/api/v3"
 
 var CookieCache = ""
 
-func RequestAndGetResponse(method string, URL string, requestBodyData map[string]string, responseData any) error {
+func RequestAndGetResponse(method string, URL string, requestBodyData map[string]any, responseData any) error {
 	requestJson, _ := json.Marshal(requestBodyData)
 	req, err := http.NewRequest(method, URL, bytes.NewBuffer(requestJson))
 	if err != nil {
@@ -28,8 +28,8 @@ func RequestAndGetResponse(method string, URL string, requestBodyData map[string
 		fmt.Println(err)
 		return err
 	}
-	//fmt.Println(response)
-	//fmt.Printf("%#v", response)
+	// fmt.Println(response)
+	// fmt.Printf("%#v", response)
 	defer response.Body.Close()
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {

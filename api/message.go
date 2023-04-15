@@ -29,7 +29,7 @@ type GetMessagesResponse struct {
 	} `json:"hits"`
 }
 
-func GetMessages(requestData map[string]string) (*GetMessagesResponse, error) {
+func GetMessages(requestData map[string]any) (*GetMessagesResponse, error) {
 	// requestData := map[string]string{"from": "a4f4ca7e-054e-4d8b-842e-8b777c353a5d"}
 	var getMeResponse *GetMessagesResponse
 	err := RequestAndGetResponse("GET", getMessagesURL, requestData, &getMeResponse)
@@ -41,7 +41,7 @@ func GetMessages(requestData map[string]string) (*GetMessagesResponse, error) {
 }
 
 func EditMessages(messageID string, content string) (*GetMessagesResponse, error) {
-	requestData := map[string]string{"content": content}
+	requestData := map[string]any{"content": content}
 	var getMeResponse *GetMessagesResponse
 	err := RequestAndGetResponse("PUT", MessagesURL+messageID, requestData, &getMeResponse)
 	if err != nil {
@@ -52,7 +52,7 @@ func EditMessages(messageID string, content string) (*GetMessagesResponse, error
 }
 
 func PostStamp(messageID string, stampID string) error {
-	requestData := map[string]string{}
+	requestData := map[string]any{}
 	var getMeResponse *GetMessagesResponse
 	err := RequestAndGetResponse("POST", MessagesURL+messageID+"/stamps/"+stampID, requestData, &getMeResponse)
 	if err != nil {
