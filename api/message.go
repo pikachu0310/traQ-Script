@@ -29,15 +29,27 @@ type GetMessagesResponse struct {
 	} `json:"hits"`
 }
 
+type GetMessageStamps struct {
+	Stamps []GetMessageStamp
+}
+
+type GetMessageStamp struct {
+	UserId    string    `json:"userId"`
+	StampId   string    `json:"stampId"`
+	Count     int       `json:"count"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
 func GetMessages(requestData map[string]any) (*GetMessagesResponse, error) {
 	// requestData := map[string]string{"from": "a4f4ca7e-054e-4d8b-842e-8b777c353a5d"}
-	var getMeResponse *GetMessagesResponse
-	err := RequestAndGetResponse("GET", getMessagesURL, requestData, &getMeResponse)
+	var getMessagesResponse *GetMessagesResponse
+	err := RequestAndGetResponse("GET", getMessagesURL, requestData, &getMessagesResponse)
 	if err != nil {
 		fmt.Println(err)
 		return &GetMessagesResponse{}, err
 	}
-	return getMeResponse, nil
+	return getMessagesResponse, nil
 }
 
 func EditMessages(messageID string, content string) (*GetMessagesResponse, error) {
@@ -51,8 +63,18 @@ func EditMessages(messageID string, content string) (*GetMessagesResponse, error
 	return getMeResponse, nil
 }
 
+func GetStamps(messageID string) (*GetMessageStamps, error) {
+	var getMessageStamps *GetMessageStamps
+	err := RequestAndGetResponse("GET", MessagesURL+messageID+"/stamps", nil, &getMessageStamps)
+	if err != nil {
+		fmt.Println(err)
+		return &GetMessageStamps{}, err
+	}
+	return getMessageStamps, nil
+}
+
 func PostStamp(messageID string, stampID string) error {
-	requestData := map[string]any{}
+	requestData := map[string]any{"count": 100}
 	var getMeResponse *GetMessagesResponse
 	err := RequestAndGetResponse("POST", MessagesURL+messageID+"/stamps/"+stampID, requestData, &getMeResponse)
 	if err != nil {
