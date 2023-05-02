@@ -9,6 +9,7 @@ import (
 )
 
 const BaseURL = "https://q.trap.jp/api/v3"
+const Stamp_Kusa = "6308a443-69f0-45e5-866f-56cc2c93578f"
 
 var CookieCache = ""
 
