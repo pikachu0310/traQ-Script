@@ -6,6 +6,7 @@ import (
 )
 
 const meURL = BaseURL + "/users/me"
+const subscriptionsURL = BaseURL + "/users/me/subscriptions"
 
 type GetMeResponse struct {
 	Id          string    `json:"id"`
@@ -24,6 +25,11 @@ type GetMeResponse struct {
 	HomeChannel string    `json:"homeChannel"`
 }
 
+type GetMeSubscriptions struct {
+	ChannelId string `json:"channelId"`
+	Level     int    `json:"level"`
+}
+
 type Tag struct {
 	TagId     string    `json:"tagId"`
 	Tag       string    `json:"tag"`
@@ -32,12 +38,34 @@ type Tag struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-func GetMe() (*GetMeResponse, error) {
-	var getMeResponse *GetMeResponse
-	err := RequestAndGetResponse("GET", meURL, nil, &getMeResponse)
+func GetMe() (getMeResponse *GetMeResponse, err error) {
+	err = RequestAndGetResponse("GET", meURL, nil, &getMeResponse)
 	if err != nil {
 		fmt.Println(err)
-		return getMeResponse, err
+		return
 	}
-	return getMeResponse, nil
+	return
+}
+
+func GetSubscriptions() (getMeSubscriptions *[]GetMeSubscriptions, err error) {
+	err = RequestAndGetResponse("GET", subscriptionsURL, nil, &getMeSubscriptions)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	return
+}
+
+func PutSubscriptions(channelID string, level int) error {
+	// チャンネル購読レベル
+	// 0：無し
+	// 1：未読管理
+	// 2：未読管理+通知
+	requestData := map[string]any{"level": level}
+	err := RequestAndGetResponse("PUT", meURL+"/subscriptions/"+channelID, requestData, nil)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
 }
