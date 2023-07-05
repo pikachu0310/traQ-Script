@@ -1,4 +1,4 @@
-package main
+package programs
 
 import (
 	"fmt"
@@ -6,28 +6,29 @@ import (
 
 	"github.com/samber/lo"
 
-	"traQ-Script/api"
-	"traQ-Script/util"
+	"traQ-Script/pkg/api/traQ/v1/util"
+
+	"traQ-Script/pkg/api/traQ/v1"
 )
 
 type ChannelsWithSubscriptionLevel lo.Tuple2[string, int]
 
-func main() {
+func AllChanelNotification() {
 	_, _, err := util.Login()
 	if err != nil {
 		panic(err)
 	}
 
-	allChannelDetails, err := api.GetChannels()
+	allChannelDetails, err := v1.GetChannels()
 	if err != nil {
 		panic(err)
 	}
-	allPublicChannels := lo.Map(allChannelDetails.Public, func(c api.GetChannelResponsePublic, _ int) string { return c.Id })
-	allSubscribedChannelsWithLevel, err := api.GetSubscriptions()
+	allPublicChannels := lo.Map(allChannelDetails.Public, func(c v1.GetChannelResponsePublic, _ int) string { return c.Id })
+	allSubscribedChannelsWithLevel, err := v1.GetSubscriptions()
 	if err != nil {
 		panic(err)
 	}
-	allSubscribedChannels := lo.Map(*allSubscribedChannelsWithLevel, func(c api.GetMeSubscriptions, _ int) string { return c.ChannelId })
+	allSubscribedChannels := lo.Map(*allSubscribedChannelsWithLevel, func(c v1.GetMeSubscriptions, _ int) string { return c.ChannelId })
 	notSubscribedChannels := difference(allPublicChannels, allSubscribedChannels)
 	notSubscribedChannelsWithSubscriptionLevel := lo.Map(notSubscribedChannels, func(c string, _ int) ChannelsWithSubscriptionLevel {
 		return ChannelsWithSubscriptionLevel(lo.T2(c, 1))
@@ -35,7 +36,7 @@ func main() {
 
 	for _, channelWithSubscriptionLevel := range notSubscribedChannelsWithSubscriptionLevel {
 		fmt.Printf("Subscribe to %s\n", channelWithSubscriptionLevel.A)
-		err = api.PutSubscriptions(channelWithSubscriptionLevel.A, channelWithSubscriptionLevel.B)
+		err = v1.PutSubscriptions(channelWithSubscriptionLevel.A, channelWithSubscriptionLevel.B)
 		if err != nil {
 			panic(err)
 		}

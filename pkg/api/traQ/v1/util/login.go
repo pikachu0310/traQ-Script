@@ -9,7 +9,7 @@ import (
 
 	"golang.org/x/term"
 
-	"traQ-Script/api"
+	"traQ-Script/pkg/api/traQ/v1"
 )
 
 func credentials() (string, string, error) {
@@ -36,11 +36,11 @@ func Login() (username, password string, err error) {
 	fmt.Printf("traQに接続して検索するためにログインが必要です。\n")
 	username, password, _ = credentials()
 	// fmt.Printf("Username: %s, Password: %s\n", username, "********")
-	_, err = api.Login(username, password)
+	_, err = v1.Login(username, password)
 	if err != nil {
 		return
 	}
-	if api.CookieCache == "" {
+	if v1.CookieCache == "" {
 		err = fmt.Errorf("CookieCache is empty(usernameかpasswordが間違えています)")
 		return
 	}
