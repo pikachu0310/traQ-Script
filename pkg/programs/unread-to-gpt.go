@@ -16,7 +16,7 @@ var myBotChannelId = "9f551eae-0e50-4887-984e-ce9d8b3919cc"
 
 func UnreadToGPT() {
 
-	unreadChannels, _, err := v2.GetMyUnreadChannels()
+	unreadChannels, _, err := v2.GetMyUnreadChannels(v2.Me)
 	if err != nil {
 		panic(err)
 	}
@@ -37,7 +37,7 @@ func UnreadToGPT() {
 
 		inputFormattedMessages := formatMessagesToInputFormat(formattedMessages)
 
-		postedMessage, _, err := v2.PostMessage(myBotChannelId, "#"+v2.ChannelIdToAllParentChannelName(channel.ChannelId), true)
+		postedMessage, _, err := v2.PostMessage(v2.Bot, myBotChannelId, "#"+v2.ChannelIdToAllParentChannelName(channel.ChannelId), true)
 		if err != nil {
 			return
 		}
@@ -53,7 +53,7 @@ func UnreadToGPT() {
 		openai.AddMessageAsUser(inputFormattedMessages)
 		channelMessage := fmt.Sprintf("!{\"type\":\"channel\",\"raw\":\"#%s\",\"id\":\"%s\"}", v2.ChannelIdToAllParentChannelName(channel.ChannelId), channel.ChannelId)
 		_, _, err = openai.Stream(openai.Messages, openai.GPT3dot5Turbo, func(message string) {
-			_, err := v2.EditMessage(postedMessage.Id, channelMessage+"\n"+message)
+			_, err := v2.EditMessage(v2.Bot, postedMessage.Id, channelMessage+"\n"+message)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -61,7 +61,7 @@ func UnreadToGPT() {
 		if err != nil {
 			fmt.Println(err)
 		}
-		_, err = v2.ReadChannel(channel.ChannelId)
+		_, err = v2.ReadChannel(v2.Me, channel.ChannelId)
 		if err != nil {
 			return
 		}

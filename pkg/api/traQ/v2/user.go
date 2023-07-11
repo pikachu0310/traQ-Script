@@ -26,7 +26,7 @@ func UserCache() (UserIdToUserName, UserNameToUserId map[string]string) {
 }
 
 func GetUsers() ([]traq.User, *http.Response, error) {
-	return Client.UserApi.GetUsers(Auth).IncludeSuspended(true).Execute()
+	return GetClient(Bot).UserApi.GetUsers(GetContext(Bot)).IncludeSuspended(true).Execute()
 }
 
 func UserIdToUserNameFunc(UserId string) string {

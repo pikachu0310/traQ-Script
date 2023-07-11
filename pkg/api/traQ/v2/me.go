@@ -6,10 +6,10 @@ import (
 	"github.com/traPtitech/go-traq"
 )
 
-func GetMyUnreadChannels() ([]traq.UnreadChannel, *http.Response, error) {
-	return Client.MeApi.GetMyUnreadChannels(Auth).Execute()
+func GetMyUnreadChannels(client int) ([]traq.UnreadChannel, *http.Response, error) {
+	return GetClient(client).MeApi.GetMyUnreadChannels(GetContext(client)).Execute()
 }
 
-func ReadChannel(channelId string) (*http.Response, error) {
-	return Client.MeApi.ReadChannel(Auth, channelId).Execute()
+func ReadChannel(client int, channelId string) (*http.Response, error) {
+	return GetClient(client).MeApi.ReadChannel(GetContext(client), channelId).Execute()
 }

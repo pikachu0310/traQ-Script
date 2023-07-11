@@ -57,9 +57,9 @@ func ChannelIdToAllParentChannelName(ChannelId string) string {
 }
 
 func GetChannel(channelId string) (*traq.Channel, *http.Response, error) {
-	return Client.ChannelApi.GetChannel(Auth, channelId).Execute()
+	return GetClient(Bot).ChannelApi.GetChannel(GetContext(Bot), channelId).Execute()
 }
 
 func GetChannels() (*traq.ChannelList, *http.Response, error) {
-	return Client.ChannelApi.GetChannels(Auth).Execute()
+	return GetClient(Bot).ChannelApi.GetChannels(GetContext(Bot)).Execute()
 }
