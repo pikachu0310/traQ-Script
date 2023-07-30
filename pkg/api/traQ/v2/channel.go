@@ -24,9 +24,11 @@ func ChannelCache() (ChannelIdToChannelName, ChannelNameToChannelId, ChannelIdTo
 	}
 	ChannelIdToChannelParentId = map[string]string{}
 	for _, channel := range Channel.Public {
-		if channel.ParentId.IsSet() {
-			ChannelIdToChannelParentId[channel.Id] = channel.GetParentId()
+		parentId := channel.GetParentId()
+		if parentId == "" {
+			continue
 		}
+		ChannelIdToChannelParentId[channel.Id] = parentId
 	}
 	return
 }
@@ -39,19 +41,21 @@ func ChannelNameToChannelIdFunc(ChannelName string) string {
 	return ChannelNameToChannelId[ChannelName]
 }
 
-func ChannelIdToChannelParentIdFunc(ChannelId string) string {
-	return ChannelIdToChannelParentId[ChannelId]
+func ChannelIdToChannelParentIdFunc(ChannelId string) (string, bool) {
+	channelId, ok := ChannelIdToChannelParentId[ChannelId]
+	return channelId, ok
 }
 
 func ChannelIdToAllParentChannelName(ChannelId string) string {
 	var ChannelName string
 	for {
-		if ChannelIdToChannelParentIdFunc(ChannelId) == "" {
+		channelId, ok := ChannelIdToChannelParentIdFunc(ChannelId)
+		if !ok {
 			ChannelName = ChannelIdToChannelNameFunc(ChannelId) + ChannelName
 			break
 		}
 		ChannelName = "/" + ChannelIdToChannelNameFunc(ChannelId) + ChannelName
-		ChannelId = ChannelIdToChannelParentIdFunc(ChannelId)
+		ChannelId = channelId
 	}
 	return ChannelName
 }

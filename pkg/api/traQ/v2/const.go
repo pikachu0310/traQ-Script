@@ -15,6 +15,9 @@ const (
 	Me
 )
 
+const MyBotChannelId = "9f551eae-0e50-4887-984e-ce9d8b3919cc"
+const MyTimesChannelId = "0081b342-b55b-4366-bba7-bb5c57e99039"
+
 func GetClient(clientType int) (client *traq.APIClient) {
 	switch clientType {
 	case Bot:

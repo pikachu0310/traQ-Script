@@ -27,3 +27,7 @@ func SearchMessages(word string, after, before time.Time, in, to, from, citation
 func SearchMessagesByUnread(after time.Time, channelId string) (*traq.MessageSearchResult, *http.Response, error) {
 	return GetClient(Bot).MessageApi.SearchMessages(GetContext(Bot)).After(after).In(channelId).Limit(100).Sort("-createdAt").Execute()
 }
+
+func SearchMessagesByTime(after time.Time, before time.Time) (*traq.MessageSearchResult, *http.Response, error) {
+	return GetClient(Bot).MessageApi.SearchMessages(GetContext(Bot)).After(after).Before(before).Limit(100).Bot(false).Execute()
+}
