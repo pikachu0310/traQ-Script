@@ -2,6 +2,7 @@ package programs
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -12,8 +13,6 @@ import (
 	v2 "traQ-Script/pkg/api/traQ/v2"
 )
 
-var myBotChannelId = "9f551eae-0e50-4887-984e-ce9d8b3919cc"
-
 func UnreadToGPT() {
 
 	unreadChannels, _, err := v2.GetMyUnreadChannels(v2.Me)
@@ -21,8 +20,10 @@ func UnreadToGPT() {
 		panic(err)
 	}
 
+	sortUnreadChannelsByUpdatedAt(unreadChannels)
+
 	for i, channel := range unreadChannels {
-		if i >= 1 {
+		if i >= 20 {
 			break
 		}
 
@@ -37,7 +38,7 @@ func UnreadToGPT() {
 
 		inputFormattedMessages := formatMessagesToInputFormat(formattedMessages)
 
-		postedMessage, _, err := v2.PostMessage(v2.Bot, myBotChannelId, "#"+v2.ChannelIdToAllParentChannelName(channel.ChannelId), true)
+		postedMessage, _, err := v2.PostMessage(v2.Bot, v2.MyBotChannelId, "#"+v2.ChannelIdToAllParentChannelName(channel.ChannelId), true)
 		if err != nil {
 			return
 		}
@@ -85,6 +86,12 @@ func getMessagesByUnreadChannel(channel traq.UnreadChannel) (messages []traq.Mes
 		messages = append(messages, searchResult.Hits...)
 	}
 	return
+}
+
+func sortUnreadChannelsByUpdatedAt(channels []traq.UnreadChannel) {
+	sort.Slice(channels, func(i, j int) bool {
+		return channels[i].UpdatedAt.Before(channels[j].UpdatedAt)
+	})
 }
 
 func formatMessagesToInputFormat(formattedMessages []string) string {
